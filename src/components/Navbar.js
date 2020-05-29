@@ -2,21 +2,26 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
+
+
+
+
+
 class Navbar extends React.Component {
 
     handleClick = () => {
         this.props.resetUsername()
         this.props.resetNote()
         this.props.resetUser()
-        this.props.resetNote()
+        this.props.resetNotes()
     }
 
     render(){
         return (
-            <nav class="navbar  navbar-light bg-light">
-                <Link to="/dashboard" className="navbar-brand mb-0 h1">Dashbord</Link>
-                <Link to="/note/new" className="navbar-brand mb-0 h1">New Note</Link>                        
-                <Link onClick={this.handleClick} to="/login" className="navbar-brand mb-0 h1">LogOut</Link>                    
+            <nav class="navbar navbar-dark bg-dark">
+                <Link  to="/dashboard" >Dashbord</Link>
+                <Link  to="/note/new" >New Note</Link>                        
+                <Link onClick={this.handleClick} to="/login" >LogOut</Link>            
             </nav>
         )
     }

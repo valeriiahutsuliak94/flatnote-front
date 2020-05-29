@@ -1,8 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
+
 import { Redirect } from 'react-router-dom'
+
 import NoteBox from '../components/NoteBox'
 import NoteDetails from '../components/NoteDetails'
+
+
 
 const URL = 'http://localhost:3000'
 const USERS = `${URL}/users`
@@ -16,27 +20,24 @@ class Dashboard extends React.Component {
         }
     }
     
-    checkForUsers() {
-        // console.log('setting user')
-        if (!(this.props.username)) {
-            return <Redirect to="/login"/>
-        }
-    }
+    // checkForUsers() {
+    //     // console.log('setting user')
+    //     if (!(this.props.username)) {
+    //         return <Redirect to="/login"/>
+    //     }
+    // }
 
     fetchNotes = () => {
-        // console.log('fetching notes', this.props)
         fetch(`${USERS}/${this.props.user.id}`)
         .then(resp => resp.json())
         .then(user => this.props.setNotes(user.notes))
     }
 
     renderNotes = () => {
-        // console.log('rendering notes')
         return this.props.notes.map(note => <NoteBox note={note}/>)
     }
 
     setOrCreateUser() {
-        // console.log(this.props.users)
         const usernameArray = this.props.users.map(user => user.username)
         if (usernameArray.includes(this.props.username)) {
           const chosenUser = this.props.users.find(user => user.username === this.props.username)
@@ -68,23 +69,25 @@ class Dashboard extends React.Component {
             .then(resp => resp.json())
             .then(note => this.props.setNote(note))
         }
+        
     }
+
     
     conditionalDetails = () => {
         if (this.props.note) {
             return <NoteDetails />
         } 
+        
     }
     
     render() {
-        // console.log(this.props)
         return (
             <div className="container">
                 <div className="row">
                     <div className="col">
-                        {!(this.props.user) && this.props.users ? this.setOrCreateUser() : true}
+                        {!(this.props.user) && this.props.users ? this.setOrCreateUser() : true} 
                         {!this.props.notes && this.props.user ? this.fetchNotes() : true}
-                        {this.props.notes ? this.renderNotes() : true}
+                        {this.props.notes ? this.renderNotes() : true} 
                     </div>
                     <div className="col">
                         {this.conditionalDetails()}
@@ -98,7 +101,7 @@ class Dashboard extends React.Component {
 const mapDispatchToProps = dispatch => {
     return { 
       setNotes: (notes) => dispatch({type: 'SET_NOTES', notes: notes}),
-      setNote: (note) => dispatch({type: 'SET_NOTE', note: note}),
+      setNote: () => dispatch({type: 'SET_NOTE', note: undefined}),
       setUser: (user) => dispatch({type: 'SET_USER', user: user})
    }
 }

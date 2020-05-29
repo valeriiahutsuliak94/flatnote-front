@@ -6,9 +6,9 @@ import { Redirect } from 'react-router-dom'
 
 const URL = 'http://localhost:3000'
 const NOTES = `${URL}/notes`
-const NOTE_TAGS =`${URL}/note_tags`
+// const NOTE_TAGS =`${URL}/note_tags`
 
-class NewNoteForm extends React.Component {
+class NewNote extends React.Component {
     state = {
         redirectToggle: false
     }
@@ -88,4 +88,4 @@ const mapDispatchToProps = dispatch => {
    }
   }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewNoteForm)
+export default connect(mapStateToProps, mapDispatchToProps)(NewNote)

@@ -1,12 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
+
 
 const NOTES = 'http://localhost:3000/notes/'
 
 class NoteBox extends React.Component {
     state = {
         toggleChosen: false
+    }
+    handleSubmit = (event) => {
+        event.preventDefault()
+        const title = event.target.querySelector('input').value
+        const content = event.target.querySelector('textarea').value
+        this.postFetch(title, content)
+        this.setState({redirectToggle: true})
     }
     
     pickNote = () => {
@@ -15,6 +23,7 @@ class NoteBox extends React.Component {
         .then(note => this.props.setNote(note))
         this.setState({toggleChosen: true})
     }
+
     
     noteLink = () => {
         return `/note/${this.props.note.id}`
@@ -22,15 +31,11 @@ class NoteBox extends React.Component {
     
     render() {
         return (
-            <div onClick={this.pickNote} className="card">
-                <div className="card-header">
-                    <h3>{this.props.note.title}</h3>
-                </div>
-                <div className="card-body">
-                    <p className="card-text">{this.props.note.content}</p>
-                </div>
-                {this.state.toggleChosen ? <Redirect to={this.noteLink()}/> : true}
+            <div onClick={this.pickNote} className="list-group">
+                <Link  to={`/note/${this.props.note.id}`}>{this.props.note.title}</Link>
             </div>
+            
+
         )
     }
 }

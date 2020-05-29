@@ -45,10 +45,12 @@ class Login extends React.Component {
     render() {
         console.log(this.props)
         return (
-            <div>
+            <nav class="navbar navbar-expand-sm bg-light justify-content-center">
                 <input value={this.state.input} type="text" onChange={this.handleChange}/>
                 <button onClick={this.handleSubmit}>Login</button>
-            </div>
+                
+    
+            </nav>
         )
     } 
 }

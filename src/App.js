@@ -1,8 +1,11 @@
+
 import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  Link
+
 } from 'react-router-dom'
 import './App.css';
 import Login from './components/Login'
@@ -10,8 +13,10 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Dashboard from './containers/Dashboard'
-import NewNoteForm from './components/NewNoteForm'
+import NewNote from './components/NewNote'
 import UserLogin from './components/UserLogin'
+import NoteBox from './components/NoteBox';
+
 
 const URL = 'http://localhost:3000'
 const USERS = `${URL}/users`
@@ -53,11 +58,12 @@ class App extends React.Component {
             </Route>
             <Route path="/note/new">
             <Navbar/>
-            <NewNoteForm/>
+            <NewNote/>
             </Route>
             <Route path="/note/:id">
             <Navbar/>
             <Dashboard/>
+          
             </Route>
           </Switch>
         </div>

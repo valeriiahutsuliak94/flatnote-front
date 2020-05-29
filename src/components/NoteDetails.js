@@ -1,12 +1,22 @@
-import React from 'react'
+import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import Dashboard from '../containers/Dashboard'
+import { withRouter } from 'react-router'
+
+
 
 const URL= 'http://localhost:3000'
 const NOTES = `${URL}/notes/`
 const NOTE_TAGS =`${URL}/note_tags`
 
+
+
+
 class NoteDetails extends React.Component {
-    constructor(props) {
+
+    
+
+        constructor(props) {
         super(props)
         this.state = {
             editToggle: false,
@@ -15,27 +25,30 @@ class NoteDetails extends React.Component {
         }
     }
 
-
-    handleClick = () => {
-        this.props.resetUsername()
-        this.props.resetNote()
-        this.props.resetUser()
-        this.props.resetNote()
-    }
+ 
     
     deleteNote = () => {
         const fetchObj = {
             method: 'DELETE',
-            headers: {'content-type': 'application/json'},
-            body: JSON.stringify(this.props.note)
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+             // body: JSON.stringify(this.props.note)
         }
-        fetch(NOTES + this.props.note.id, fetchObj)
-        .then(resp => resp.json())
-        .then(data => this.props.resetNote())
+        
+            fetch(NOTES + this.props.note.id, fetchObj)
+            .then(resp => resp.json())
+            .then(note => {
+                    this.props.setNote(note)
+                    this.props.addNote(note)
+                    this.setState({note: note})
+            })
+        }
+    
+        
 
-    }
-
-
+   
 
     showEdit = () => {
         this.setState({
@@ -48,12 +61,11 @@ class NoteDetails extends React.Component {
 
     
     renderShow = () => {
-      
+    
         return (
             <div>
                 <h2>{this.props.note.title}</h2>
                 <p>{this.props.note.content}</p>
-               
                 <br/>
                 <button onClick={this.deleteNote}>Delete</button>
                 <button onClick={this.showEdit}>Edit</button>
@@ -66,7 +78,7 @@ class NoteDetails extends React.Component {
 
     
     handleSave = (event) => {
-       
+        event.preventDefault()
         const noteUpdate = {
             title: this.state.title,
             content: this.state.content
@@ -80,10 +92,12 @@ class NoteDetails extends React.Component {
 
         fetch(NOTES + this.props.note.id, fetchObj)
         .then(resp => resp.json())
-        .then(note => console.log(note))
-
+        .then(note => {
+            this.props.setNote(note)
+            this.props.addNote(note)
         
-        this.setState({editToggle: false})
+        })
+    
 
     }
 
@@ -107,33 +121,33 @@ class NoteDetails extends React.Component {
         )
     }
 
-    handleCheck = (event) => {
-        event.target.checked = !event.target.checked
-    }
+
 
     
     
     render = () => {
-        console.log(this.props.note)
+        // console.log(this.props.note)
         return (
             <div>
-                {this.state.editToggle ? this.renderEdit() : this.renderShow()}
+                {this.state.editToggle ?  this.renderEdit() : this.renderShow() }
             </div>
         )
     }
 }
 
+
 const mapStateToProps = state => {
     return { 
-      note: state.note,
-      tags: state.tags
+      note: state.note
+      
+
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return { 
-        resetNote: () => dispatch({type: 'SET_NOTE', note: undefined}),
-        setNote: (note) => dispatch({type: 'SET_NOTE', note: note})
+        setNote: () => dispatch({type: 'SET_NOTE', note: undefined}),
+        addNote: (note) => dispatch({type: 'SET_NOTES', note: note})
     }
 }
 
