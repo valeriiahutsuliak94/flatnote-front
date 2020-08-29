@@ -3,12 +3,11 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 
 
+const BASE = 'http://localhost:3000'
+const NOTES = `${BASE}/notes`
+const NOTE_TAGS =`${BASE}/note_tags`
 
-const URL = 'http://localhost:3000'
-const NOTES = `${URL}/notes`
-// const NOTE_TAGS =`${URL}/note_tags`
-
-class NewNote extends React.Component {
+class NewNoteForm extends React.Component {
     state = {
         redirectToggle: false
     }
@@ -17,13 +16,36 @@ class NewNote extends React.Component {
         event.preventDefault()
         const title = event.target.querySelector('input').value
         const content = event.target.querySelector('textarea').value
-        this.postFetch(title, content)
+        const checkboxes = event.target.querySelectorAll('.tagbox')
+        const checkboxArray = Array.from(checkboxes)
+        console.log(checkboxArray)
+        // checked is the array of checked tag ids
+        const checked = checkboxArray.filter(box => box.checked).map(box => parseInt(box.value))
+        console.log(checked)
+        this.postFetch(title, content, checked)
+        console.log('before the redirect')
         this.setState({redirectToggle: true})
     }
 
-
+    fetchNoteTag = (tagId, noteId) => {
+        const noteTagObj = {
+            tag_id: tagId,
+            note_id: noteId
+        }
+        const postObj = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify(noteTagObj)
+        }
+        fetch(NOTE_TAGS, postObj)
+        .then(resp => resp.json())
+        .then(noteTag => console.log(noteTag))
+    }
     
-    postFetch = (title, content) => {
+    postFetch = (title, content, checkedTagIds) => {
         const noteObj = {
             user_id: this.props.user.id,
             title: title,
@@ -42,6 +64,8 @@ class NewNote extends React.Component {
         fetch(NOTES, fetchObj)
         .then(resp => resp.json())
         .then(note => {
+            console.log(note)
+            checkedTagIds.forEach(tagId => this.fetchNoteTag(tagId, note.id))
             this.props.setNote(note)
             this.props.addNote(note)
             this.setState({note: note})
@@ -52,7 +76,17 @@ class NewNote extends React.Component {
         return `/note/${this.props.note.id}`
     }
 
- 
+    renderTagBoxes = () => {
+        console.log(this.props.tags)
+        return this.props.tags.map(tag => {
+            return (
+                <div>
+                    {tag.name}
+                    <input type="checkbox" class="tagbox" value={tag.id}/> 
+                </div>
+            )
+        })
+    }
 
     render() {
         return (
@@ -65,7 +99,8 @@ class NewNote extends React.Component {
                 Notes <textarea name="notes"></textarea>
                 <br/>
                 <br/>
-                
+                Tags <br/>
+                {this.props.tags ? this.renderTagBoxes() : true }
                 <input type="submit" value="Save"/>
             </form>
             </div>
@@ -77,7 +112,7 @@ const mapStateToProps = state => {
     return { 
       user: state.user,
       note: state.note,
-   
+      tags: state.tags
     }
 }
 
@@ -88,4 +123,4 @@ const mapDispatchToProps = dispatch => {
    }
   }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewNote)
+export default connect(mapStateToProps, mapDispatchToProps)(NewNoteForm)
