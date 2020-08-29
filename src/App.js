@@ -1,26 +1,23 @@
-
 import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
-
 } from 'react-router-dom'
 import './App.css';
 import Login from './components/Login'
-import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
 import Navbar from './components/Navbar'
+import { connect } from 'react-redux'
+import NavbarLogin from './components/NavbarLogin'
 import Dashboard from './containers/Dashboard'
-import NewNote from './components/NewNote'
-import UserLogin from './components/UserLogin'
-import NoteBox from './components/NoteBox';
+// import { render } from '@testing-library/react';
+import { Redirect } from 'react-router-dom'
+import NewNoteForm from './components/NewNoteForm'
 
-
-const URL = 'http://localhost:3000'
-const USERS = `${URL}/users`
-const TAGS = `${URL}/tags`
+const BASE = 'http://localhost:3000'
+const USERS = `${BASE}/users`
+const TAGS = `${BASE}/tags`
 
 class App extends React.Component {
   
@@ -41,29 +38,28 @@ class App extends React.Component {
     .then(tags => this.props.setTags(tags))
   }
 
-
   render() {
     return (
       <Router>
         <div>
+          {/* {this.setOrCreateUser()} */}
           {this.renderRedirect()}
           <Switch>
             <Route path="/login">
-              <UserLogin/>
+              <NavbarLogin />
               <Login />
             </Route>
             <Route path="/dashboard">
-              <Navbar/>
-              <Dashboard/>
+              <Navbar />
+              <Dashboard />
             </Route>
             <Route path="/note/new">
-            <Navbar/>
-            <NewNote/>
+              <Navbar />
+              <NewNoteForm />
             </Route>
             <Route path="/note/:id">
-            <Navbar/>
-            <Dashboard/>
-          
+              <Navbar />
+              <Dashboard />
             </Route>
           </Switch>
         </div>
@@ -86,6 +82,5 @@ const mapDispatchToProps = dispatch => {
     setTags: (tags) => dispatch({type: 'SET_TAGS', tags: tags}),
  }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
